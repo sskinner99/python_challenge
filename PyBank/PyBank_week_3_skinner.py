@@ -20,7 +20,7 @@
 #----------------------------
 #Total Months: 86
 #Total: $38382578
-#Average  Change: $-2315.12
+#Average Change: $-2315.12
 #Greatest Increase in Profits: Feb-2012 ($1926159)
 #Greatest Decrease in Profits: Sep-2013 ($-2196167)
 
@@ -40,11 +40,21 @@ with open(file, 'r') as month_data:
     # Print the contents of the text file
     TotalMonths = 0
     NetProfitLosses = 0
+    ChangeInProfitLosses = 0
+    Prev_Dollars = 0
+    SumNetProfitLosses = 0
+    GreatestIncreaseInProfits = 0
+    GreatestDecreasesInProfits = 0
+    GIPMonthYear = 0
+    GDPMonthYear = 0
 
-    #to skip header row 1
-    next(lines)
     
-    #for looping through each row except header to Count months in data set
+    #to skip header row 1
+    ColumnHeader = next(lines)
+    print (ColumnHeader)
+    
+    #for looping through each row except header to Count months in data set and print Net Profits Losses for Period
+    # also to figure and print averager of net profits and losses
 
     for line in lines: 
         
@@ -52,15 +62,38 @@ with open(file, 'r') as month_data:
     
         NetProfitLosses +=int(line[1])
 
+        ChangeInProfitLosses = int(line[1]) - Prev_Dollars
+        #print (ChangeInProfitLosses)
+        Prev_Dollars = int(line[1])
+        SumNetProfitLosses += ChangeInProfitLosses
+        if ChangeInProfitLosses > GreatestIncreaseInProfits: 
+            GreatestIncreaseInProfits = ChangeInProfitLosses
+            GIPMonthYear = line[0]
 
-    print(TotalMonths)
-    print(NetProfitLosses)
-
-    #Count months in data set
+        #put gdp stuff here.    
 
 
+Average = SumNetProfitLosses / TotalMonths
+
+#Sample Output 
+#Total Months: 86
+#Total: $38382578
+#Average Change: $-2315.12
+#Greatest Increase in Profits: Feb-2012 ($1926159)
+#Greatest Decrease in Profits: Sep-2013 ($-2196167)
+
+OutputAnalysis = (
+      f"Total Months:  {TotalMonths}\n"
+      f"Total:  ${NetProfitLosses}\n"
+      f"Average Change:  ${round(Average, 2)}\n"
+      f"Greatest Increase in Profits: {GIPMonthYear} {GreatestIncreaseInProfits}\n"
+      f"Greatest Decrease in Profits: {GDPMonthYear} {GreatestDecreaseInProfits}\n"
+      )
 
 
 
 
-
+print (OutputAnalysis)
+with open("Analysis/Analysis.txt", 'w') as PyBankAnalysis:
+    PyBankAnalysis.write(OutputAnalysis)
+    
